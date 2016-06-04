@@ -8,5 +8,5 @@ Instead, I will also blog something simpler, but also things that I have learned
 
 And I hope that I will be able make blogging as a daily routine work.
 
-If I am not blogging, I am preparing material for blogging.
+> If I am not blogging, I am preparing material for blogging.
 
