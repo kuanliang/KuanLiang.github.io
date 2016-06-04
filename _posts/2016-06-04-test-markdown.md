@@ -20,10 +20,6 @@ Here's a useless table:
 | Two | Three | One |
  
 
-How about a yummy crepe?
-
-![Crepe](http://lafenicegelato.com/wp-content/uploads/2014/09/crepes-with-chocolate.jpg)
-
 Here's a code chunk:
 
 ~~~
