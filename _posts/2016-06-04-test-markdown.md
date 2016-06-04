@@ -1,10 +1,10 @@
 ---
 layout: post
-title: Test markdown
-subtitle: Each post also has a subtitle
+title: markdown language
+subtitle: basic usage of markdown language
 ---
 
-You can write regular [markdown](http://markdowntutorial.com/) here and Jekyll will automatically convert it to a nice webpage.  I strongly encourage you to [take 5 minutes to learn how to write in markdown](http://markdowntutorial.com/) - it'll teach you how to transform regular text into bold/italics/headings/tables/etc.
+Here is a [5 minutes markdown tutorial](http://markdowntutorial.com/) - it'll teach you how to transform regular text into bold/italics/headings/tables/etc.
 
 **Here is some bold text**
 
@@ -27,14 +27,7 @@ x <- 5 + 10
 print(x)
 ~~~
 
-And here is some code with syntax highlighting
-
-```javascript
-var foo = function(x) {
-  return(x + 5);
-}
-foo(3)
-```
+python code with syntax highlighting
 
 Python
 
