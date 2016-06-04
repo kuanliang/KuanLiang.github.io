@@ -39,3 +39,13 @@ var foo = function(x) {
 }
 foo(3)
 ```
+
+Python
+
+```python
+def foo():
+ print 'hello markdown'
+```
+
+
+
