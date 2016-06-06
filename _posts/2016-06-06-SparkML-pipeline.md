@@ -222,107 +222,10 @@ del trainingPdf['id']
 ```
 
 
-```python
-trainingPdf
-```
 
 
 
 
-<div>
-<table border="1" class="dataframe">
-  <thead>
-    <tr style="text-align: right;">
-      <th></th>
-      <th>text</th>
-      <th>label</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <th>0</th>
-      <td>a b c d e spark</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>1</th>
-      <td>b d</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>2</th>
-      <td>spark f g h</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>3</th>
-      <td>hadoop mapreduce</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>4</th>
-      <td>b spark who</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>5</th>
-      <td>g d a y</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>6</th>
-      <td>spark fly</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>7</th>
-      <td>was mapreduce</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>8</th>
-      <td>e spark program</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>9</th>
-      <td>a e c l</td>
-      <td>0.0</td>
-    </tr>
-    <tr>
-      <th>10</th>
-      <td>spark compile</td>
-      <td>1.0</td>
-    </tr>
-    <tr>
-      <th>11</th>
-      <td>hadoop software</td>
-      <td>0.0</td>
-    </tr>
-  </tbody>
-</table>
-</div>
 
 
 
-
-```python
-X_train_counts = count_vect.fit_transform(trainingPdf)
-```
-
-
-```python
-X_train_counts.shape
-```
-
-
-
-
-    (2, 2)
-
-
-
-
-```python
-
-```
