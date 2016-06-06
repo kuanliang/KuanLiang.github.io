@@ -1,3 +1,10 @@
+---
+layout: post
+title: First Post
+subtitle:
+---
+
+
 This is the first post of my github website.
 
 At first I decided to just write things about __machine learning__, __algorithms__, 
