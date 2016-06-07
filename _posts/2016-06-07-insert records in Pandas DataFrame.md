@@ -1,0 +1,805 @@
+
+1. Initialize an empty record (np.NaN)
+2. Insert the empty record into exist DataFrame according to DataFrame's index
+3. Within the DataFrame, Fill np.NaN with previous record (method='ffill')
+
+Notes: Before fill in missing value with method forwar fill, the dataframe should be sorted first.
+
+
+```python
+import pandas as pd
+import numpy as np
+```
+
+
+```python
+from transform import transform_trafficData, transform_weatherData, get_y, create_matrix
+```
+
+
+```python
+weatherSlotDf = transform_weatherData('2016-01-26', folder='testing')
+```
+
+The records with index range(46, 158, 12) are missing.  
+We will append these record first and then fill in values with its pevious record.
+
+
+```python
+weatherSlotDf
+```
+
+
+
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>slot</th>
+      <th>Weather</th>
+      <th>temperature</th>
+      <th>PM25</th>
+    </tr>
+    <tr>
+      <th>time_slot</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>43</th>
+      <td>2016-01-26</td>
+      <td>43</td>
+      <td>1</td>
+      <td>-2.0</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>2016-01-26</td>
+      <td>44</td>
+      <td>1</td>
+      <td>-2.0</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>2016-01-26</td>
+      <td>45</td>
+      <td>1</td>
+      <td>-2.0</td>
+      <td>60</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>2016-01-26</td>
+      <td>67</td>
+      <td>1</td>
+      <td>3.0</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>2016-01-26</td>
+      <td>69</td>
+      <td>1</td>
+      <td>3.0</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>2016-01-26</td>
+      <td>79</td>
+      <td>1</td>
+      <td>5.0</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>2016-01-26</td>
+      <td>80</td>
+      <td>1</td>
+      <td>5.0</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>2016-01-26</td>
+      <td>81</td>
+      <td>1</td>
+      <td>5.0</td>
+      <td>66</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>2016-01-26</td>
+      <td>91</td>
+      <td>1</td>
+      <td>7.0</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>2016-01-26</td>
+      <td>92</td>
+      <td>1</td>
+      <td>7.0</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>2016-01-26</td>
+      <td>93</td>
+      <td>1</td>
+      <td>7.0</td>
+      <td>59</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>2016-01-26</td>
+      <td>104</td>
+      <td>1</td>
+      <td>6.0</td>
+      <td>58</td>
+    </tr>
+    <tr>
+      <th>105</th>
+      <td>2016-01-26</td>
+      <td>105</td>
+      <td>1</td>
+      <td>6.0</td>
+      <td>58</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>2016-01-26</td>
+      <td>115</td>
+      <td>2</td>
+      <td>5.0</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>116</th>
+      <td>2016-01-26</td>
+      <td>116</td>
+      <td>2</td>
+      <td>5.0</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>117</th>
+      <td>2016-01-26</td>
+      <td>117</td>
+      <td>2</td>
+      <td>4.0</td>
+      <td>65</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>2016-01-26</td>
+      <td>127</td>
+      <td>9</td>
+      <td>4.0</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>128</th>
+      <td>2016-01-26</td>
+      <td>128</td>
+      <td>9</td>
+      <td>4.0</td>
+      <td>89</td>
+    </tr>
+    <tr>
+      <th>139</th>
+      <td>2016-01-26</td>
+      <td>139</td>
+      <td>3</td>
+      <td>3.0</td>
+      <td>101</td>
+    </tr>
+    <tr>
+      <th>140</th>
+      <td>2016-01-26</td>
+      <td>140</td>
+      <td>3</td>
+      <td>4.0</td>
+      <td>101</td>
+    </tr>
+    <tr>
+      <th>141</th>
+      <td>2016-01-26</td>
+      <td>141</td>
+      <td>3</td>
+      <td>4.0</td>
+      <td>101</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+# initialize the record and set all columns to np.NaN
+rowTemp = weatherSlotDf.iloc[0]
+# set all values to NaN
+for key in rowTemp.keys():
+    rowTemp[key] = np.NaN
+
+for i in range(46, 146, 12):
+    weatherSlotDf.loc[i] = rowTemp
+
+weatherSlotDf.sort_index(inplace=True)
+```
+
+    /Users/hadoop1/anaconda/lib/python2.7/site-packages/ipykernel/__main__.py:5: SettingWithCopyWarning: 
+    A value is trying to be set on a copy of a slice from a DataFrame
+    
+    See the caveats in the documentation: http://pandas.pydata.org/pandas-docs/stable/indexing.html#indexing-view-versus-copy
+
+
+
+```python
+weatherSlotDf
+```
+
+
+
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>slot</th>
+      <th>Weather</th>
+      <th>temperature</th>
+      <th>PM25</th>
+    </tr>
+    <tr>
+      <th>time_slot</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>43</th>
+      <td>2016-01-26</td>
+      <td>43.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>2016-01-26</td>
+      <td>44.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>2016-01-26</td>
+      <td>45.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>2016-01-26</td>
+      <td>67.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>2016-01-26</td>
+      <td>69.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>2016-01-26</td>
+      <td>79.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>2016-01-26</td>
+      <td>80.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>2016-01-26</td>
+      <td>81.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>2016-01-26</td>
+      <td>91.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>2016-01-26</td>
+      <td>92.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>2016-01-26</td>
+      <td>93.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>2016-01-26</td>
+      <td>104.0</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>105</th>
+      <td>2016-01-26</td>
+      <td>105.0</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>106</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>2016-01-26</td>
+      <td>115.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>116</th>
+      <td>2016-01-26</td>
+      <td>116.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>117</th>
+      <td>2016-01-26</td>
+      <td>117.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>118</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>2016-01-26</td>
+      <td>127.0</td>
+      <td>9.0</td>
+      <td>4.0</td>
+      <td>89.0</td>
+    </tr>
+    <tr>
+      <th>128</th>
+      <td>2016-01-26</td>
+      <td>128.0</td>
+      <td>9.0</td>
+      <td>4.0</td>
+      <td>89.0</td>
+    </tr>
+    <tr>
+      <th>130</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+    <tr>
+      <th>139</th>
+      <td>2016-01-26</td>
+      <td>139.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>140</th>
+      <td>2016-01-26</td>
+      <td>140.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>141</th>
+      <td>2016-01-26</td>
+      <td>141.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>142</th>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+      <td>NaN</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+Done!!!
+
+
+```python
+weatherSlotDf.fillna(method='ffill')
+```
+
+
+
+
+<div>
+<table border="1" class="dataframe">
+  <thead>
+    <tr style="text-align: right;">
+      <th></th>
+      <th>date</th>
+      <th>slot</th>
+      <th>Weather</th>
+      <th>temperature</th>
+      <th>PM25</th>
+    </tr>
+    <tr>
+      <th>time_slot</th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <th>43</th>
+      <td>2016-01-26</td>
+      <td>43.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>44</th>
+      <td>2016-01-26</td>
+      <td>44.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>45</th>
+      <td>2016-01-26</td>
+      <td>45.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>46</th>
+      <td>2016-01-26</td>
+      <td>45.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>58</th>
+      <td>2016-01-26</td>
+      <td>45.0</td>
+      <td>1.0</td>
+      <td>-2.0</td>
+      <td>60.0</td>
+    </tr>
+    <tr>
+      <th>67</th>
+      <td>2016-01-26</td>
+      <td>67.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>69</th>
+      <td>2016-01-26</td>
+      <td>69.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>70</th>
+      <td>2016-01-26</td>
+      <td>69.0</td>
+      <td>1.0</td>
+      <td>3.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>79</th>
+      <td>2016-01-26</td>
+      <td>79.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>80</th>
+      <td>2016-01-26</td>
+      <td>80.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>81</th>
+      <td>2016-01-26</td>
+      <td>81.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>82</th>
+      <td>2016-01-26</td>
+      <td>81.0</td>
+      <td>1.0</td>
+      <td>5.0</td>
+      <td>66.0</td>
+    </tr>
+    <tr>
+      <th>91</th>
+      <td>2016-01-26</td>
+      <td>91.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>92</th>
+      <td>2016-01-26</td>
+      <td>92.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>93</th>
+      <td>2016-01-26</td>
+      <td>93.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>94</th>
+      <td>2016-01-26</td>
+      <td>93.0</td>
+      <td>1.0</td>
+      <td>7.0</td>
+      <td>59.0</td>
+    </tr>
+    <tr>
+      <th>104</th>
+      <td>2016-01-26</td>
+      <td>104.0</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>105</th>
+      <td>2016-01-26</td>
+      <td>105.0</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>106</th>
+      <td>2016-01-26</td>
+      <td>105.0</td>
+      <td>1.0</td>
+      <td>6.0</td>
+      <td>58.0</td>
+    </tr>
+    <tr>
+      <th>115</th>
+      <td>2016-01-26</td>
+      <td>115.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>116</th>
+      <td>2016-01-26</td>
+      <td>116.0</td>
+      <td>2.0</td>
+      <td>5.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>117</th>
+      <td>2016-01-26</td>
+      <td>117.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>118</th>
+      <td>2016-01-26</td>
+      <td>117.0</td>
+      <td>2.0</td>
+      <td>4.0</td>
+      <td>65.0</td>
+    </tr>
+    <tr>
+      <th>127</th>
+      <td>2016-01-26</td>
+      <td>127.0</td>
+      <td>9.0</td>
+      <td>4.0</td>
+      <td>89.0</td>
+    </tr>
+    <tr>
+      <th>128</th>
+      <td>2016-01-26</td>
+      <td>128.0</td>
+      <td>9.0</td>
+      <td>4.0</td>
+      <td>89.0</td>
+    </tr>
+    <tr>
+      <th>130</th>
+      <td>2016-01-26</td>
+      <td>128.0</td>
+      <td>9.0</td>
+      <td>4.0</td>
+      <td>89.0</td>
+    </tr>
+    <tr>
+      <th>139</th>
+      <td>2016-01-26</td>
+      <td>139.0</td>
+      <td>3.0</td>
+      <td>3.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>140</th>
+      <td>2016-01-26</td>
+      <td>140.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>141</th>
+      <td>2016-01-26</td>
+      <td>141.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>101.0</td>
+    </tr>
+    <tr>
+      <th>142</th>
+      <td>2016-01-26</td>
+      <td>141.0</td>
+      <td>3.0</td>
+      <td>4.0</td>
+      <td>101.0</td>
+    </tr>
+  </tbody>
+</table>
+</div>
+
+
+
+
+```python
+
+```
